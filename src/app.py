@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template
+from flask import Flask, redirect, render_template, request
 from counter import Counter
 
 app = Flask(__name__)
@@ -16,4 +16,15 @@ def increment():
 @app.route("/reset", methods=["POST"])
 def reset():
     cnt.reset()
+    return redirect("/")
+
+@app.route("/set", methods=["POST"])
+def set_value():
+    try:
+        value = int(request.form.get("value", ""))
+    except ValueError:
+        return render_template(
+            "index.html", value=cnt.value, error="Anna kokonaisluku."
+        ), 400
+    cnt.set_value(value)
     return redirect("/")
